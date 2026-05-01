@@ -59,7 +59,12 @@ export default function HoleCard({ hole, score, points, onScoreChange, onPointTo
           <div className={styles.ptsSection}>
             <div className={styles.ptsTitle}>Award Points</div>
             <div className={styles.ptsGrid}>
-              {POINT_DEFS.map(p => {
+              {POINT_DEFS.filter(p => {
+                const isPar3 = hole.par === 3
+                if ((p.id === 'closest_g' || p.id === 'closest_b') && !isPar3) return false
+                if ((p.id === 'fairway_g' || p.id === 'fairway_b' || p.id === 'longest_g' || p.id === 'longest_b') && isPar3) return false
+                return true
+              }).map(p => {
                 const checked = points[p.id] ?? false
                 const itemClass = p.team === 'girls'
                   ? styles.girlsItem

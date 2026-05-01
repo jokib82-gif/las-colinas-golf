@@ -55,6 +55,8 @@ export const POINT_DEFS: PointDef[] = [
   { id: 'fairway_b',      label: 'Fairway hit',           val: 1, team: 'boys'  },
   { id: 'longest_g',      label: 'Longest drive',         val: 1, team: 'girls' },
   { id: 'longest_b',      label: 'Longest drive',         val: 1, team: 'boys'  },
+  { id: 'closest_g',      label: 'Closest to hole',       val: 1, team: 'girls' },
+  { id: 'closest_b',      label: 'Closest to hole',       val: 1, team: 'boys'  },
   { id: 'gir_g',          label: 'GIR',                   val: 1, team: 'girls' },
   { id: 'gir_b',          label: 'GIR',                   val: 1, team: 'boys'  },
   { id: 'sand_g',         label: 'Sand save',             val: 1, team: 'girls' },

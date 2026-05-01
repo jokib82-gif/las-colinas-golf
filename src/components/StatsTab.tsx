@@ -7,6 +7,7 @@ const CATEGORIES = [
   { label: 'Best individual',  gid: 'best_indiv_g',    bid: 'best_indiv_b'    },
   { label: 'Best combined',    gid: 'best_combined_g', bid: 'best_combined_b' },
   { label: 'Fairway hits',     gid: 'fairway_g',       bid: 'fairway_b'       },
+  { label: 'Closest to hole',  gid: 'closest_g',       bid: 'closest_b'       },
   { label: 'GIR',              gid: 'gir_g',           bid: 'gir_b'           },
   { label: 'Sand saves',       gid: 'sand_g',          bid: 'sand_b'          },
   { label: 'One-putts',        gid: 'oneputt_g',       bid: 'oneputt_b'       },

@@ -7,6 +7,7 @@ const RULES = [
   { label: 'Best combined score (per team)', val: '1 pt' },
   { label: 'Fairway hit', val: '1 pt' },
   { label: 'Longest drive on fairway', val: '1 pt' },
+  { label: 'Closest to hole (Par 3s only)', val: '1 pt' },
   { label: 'Green in Regulation (GIR)', val: '1 pt' },
   { label: 'Sand save', val: '1 pt' },
   { label: 'One-putt', val: '1 pt' },
