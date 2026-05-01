@@ -1,0 +1,44 @@
+.header {
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+  padding: 20px 16px 16px;
+  text-align: center;
+  position: relative;
+}
+
+.pattern { display: none; }
+
+.title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--grass);
+  letter-spacing: -0.3px;
+}
+
+.sub {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 3px;
+  letter-spacing: 0.3px;
+}
+
+.badges {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--grass);
+  color: #fff;
+  border: none;
+}

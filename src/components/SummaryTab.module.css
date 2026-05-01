@@ -1,0 +1,68 @@
+.wrap { overflow-x: auto; }
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  background: var(--card);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.table th {
+  padding: 8px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+  background: #fafaf8;
+}
+
+.thLeft { text-align: left; padding-left: 14px; }
+.thGirls { color: var(--girls) !important; }
+.thBoys  { color: var(--boys)  !important; }
+
+.table td {
+  padding: 7px 8px;
+  text-align: center;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.table tr:last-child td { border: none; }
+
+.holeCell {
+  font-weight: 500;
+  text-align: left !important;
+  padding-left: 14px !important;
+}
+
+.ptsG { color: var(--girls); font-weight: 600; }
+.ptsB { color: var(--boys);  font-weight: 600; }
+
+.pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.leadGirls { background: #E8F5E9; color: var(--girls); }
+.leadBoys  { background: #E3F2FD; color: var(--boys);  }
+.leadTied  { background: #f3f4f6; color: var(--muted); }
+
+.totalRow td {
+  background: var(--grass);
+  color: #fff !important;
+  font-weight: 600;
+  padding: 9px 8px;
+}
+
+.totalLabel {
+  text-align: left !important;
+  padding-left: 14px !important;
+}
