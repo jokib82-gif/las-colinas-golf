@@ -1,4 +1,4 @@
-import { HOLES, GameState, POINT_DEFS, initHolePoints, totalPoints, TEAM_NAMES } from '@/lib/game'
+import { HOLES, GameState, POINT_DEFS, initHolePoints, dayTotals, TEAM_NAMES } from '@/lib/game'
 import styles from './StatsTab.module.css'
 
 interface Props { state: GameState }
@@ -17,7 +17,7 @@ const CATEGORIES = [
 ]
 
 export default function StatsTab({ state }: Props) {
-  const { g: totalG, b: totalB } = totalPoints(state)
+  const { g: totalG, b: totalB } = dayTotals(state)
   const total = totalG + totalB || 1
 
   return (

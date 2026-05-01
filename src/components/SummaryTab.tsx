@@ -1,10 +1,10 @@
-import { HOLES, GameState, calcHolePoints, initHolePoints, totalPoints, TEAM_NAMES } from '@/lib/game'
+import { HOLES, GameState, calcHolePoints, initHolePoints, dayTotals, TEAM_NAMES } from '@/lib/game'
 import styles from './SummaryTab.module.css'
 
 interface Props { state: GameState }
 
 export default function SummaryTab({ state }: Props) {
-  const { g: totalG, b: totalB } = totalPoints(state)
+  const { g: totalG, b: totalB } = dayTotals(state)
 
   return (
     <div className={styles.wrap}>
