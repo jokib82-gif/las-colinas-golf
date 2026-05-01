@@ -1,6 +1,6 @@
 import styles from './CourseTab.module.css'
 
-interface Props { onReset: () => void }
+interface Props { onReset: () => void; dayLabel?: string }
 
 const RULES = [
   { label: 'Best individual score (per team)', val: '1 pt' },
@@ -16,7 +16,7 @@ const RULES = [
   { label: 'Eagle', val: '3 pts' },
 ]
 
-export default function CourseTab({ onReset }: Props) {
+export default function CourseTab({ onReset, dayLabel }: Props) {
   return (
     <div>
       <div className={styles.courseCard}>
@@ -43,7 +43,7 @@ export default function CourseTab({ onReset }: Props) {
       </div>
 
       <button className={styles.resetBtn} onClick={onReset}>
-        Reset all scores
+        Reset {dayLabel ? `${dayLabel} scores` : 'scores'}
       </button>
     </div>
   )

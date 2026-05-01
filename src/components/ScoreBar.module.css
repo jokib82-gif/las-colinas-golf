@@ -55,3 +55,34 @@
 .leadGirls { background: #E8F5E9; color: var(--girls); }
 .leadBoys  { background: #E3F2FD; color: var(--boys);  }
 .leadTied  { background: #F3F4F6; color: var(--muted); }
+
+/* Compact mode for day score */
+.compact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  gap: 8px;
+}
+
+.compactTeam {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.compactName {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.compactPts {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.teamGirls .compactPts { color: var(--girls); }
+.teamBoys  .compactPts { color: var(--boys);  }

@@ -1,4 +1,4 @@
-import { HOLES, GameState, POINT_DEFS, initHolePoints, totalPoints } from '@/lib/game'
+import { HOLES, GameState, POINT_DEFS, initHolePoints, totalPoints, TEAM_NAMES } from '@/lib/game'
 import styles from './StatsTab.module.css'
 
 interface Props { state: GameState }
@@ -36,14 +36,14 @@ export default function StatsTab({ state }: Props) {
             <div key={cat.label} className={styles.catBlock}>
               <div className={styles.catLabel}>{cat.label}</div>
               <div className={styles.barRow}>
-                <span className={`${styles.barTeam} ${styles.barTeamG}`}>Girls</span>
+                <span className={`${styles.barTeam} ${styles.barTeamG}`}>{TEAM_NAMES.girls}</span>
                 <div className={styles.barWrap}>
                   <div className={`${styles.barFill} ${styles.fillGirls}`} style={{ width: `${(g / max) * 100}%` }} />
                 </div>
                 <span className={`${styles.barVal} ${styles.valGirls}`}>{g}</span>
               </div>
               <div className={styles.barRow}>
-                <span className={`${styles.barTeam} ${styles.barTeamB}`}>Boys</span>
+                <span className={`${styles.barTeam} ${styles.barTeamB}`}>{TEAM_NAMES.boys}</span>
                 <div className={styles.barWrap}>
                   <div className={`${styles.barFill} ${styles.fillBoys}`} style={{ width: `${(b / max) * 100}%` }} />
                 </div>
@@ -61,8 +61,8 @@ export default function StatsTab({ state }: Props) {
           <div className={styles.shareBoys}  style={{ width: `${(totalB / total) * 100}%` }} />
         </div>
         <div className={styles.shareLegend}>
-          <span className={styles.legGirls}>♀ Girls: {totalG} pts ({Math.round((totalG / total) * 100)}%)</span>
-          <span className={styles.legBoys}>♂ Boys: {totalB} pts ({Math.round((totalB / total) * 100)}%)</span>
+          <span className={styles.legGirls}>{TEAM_NAMES.girls}: {totalG} pts ({Math.round((totalG / total) * 100)}%)</span>
+          <span className={styles.legBoys}>{TEAM_NAMES.boys}: {totalB} pts ({Math.round((totalB / total) * 100)}%)</span>
         </div>
       </div>
     </div>

@@ -31,10 +31,13 @@
 }
 
 .barTeam {
-  width: 34px;
+  width: 80px;
   font-size: 10px;
   text-align: right;
   flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .barTeamG { color: var(--girls); }

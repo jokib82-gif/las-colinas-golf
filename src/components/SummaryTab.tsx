@@ -1,4 +1,4 @@
-import { HOLES, GameState, calcHolePoints, initHolePoints, totalPoints } from '@/lib/game'
+import { HOLES, GameState, calcHolePoints, initHolePoints, totalPoints, TEAM_NAMES } from '@/lib/game'
 import styles from './SummaryTab.module.css'
 
 interface Props { state: GameState }
@@ -13,8 +13,8 @@ export default function SummaryTab({ state }: Props) {
           <tr>
             <th className={styles.thLeft}>Hole</th>
             <th>Par</th>
-            <th className={styles.thGirls}>Girls</th>
-            <th className={styles.thBoys}>Boys</th>
+            <th className={styles.thGirls}>{TEAM_NAMES.girls}</th>
+            <th className={styles.thBoys}>{TEAM_NAMES.boys}</th>
             <th>Lead</th>
           </tr>
         </thead>
@@ -42,7 +42,7 @@ export default function SummaryTab({ state }: Props) {
             <td colSpan={2} className={styles.totalLabel}>Total</td>
             <td>{totalG}</td>
             <td>{totalB}</td>
-            <td>{totalG > totalB ? '♀ Girls' : totalB > totalG ? '♂ Boys' : 'Tied'}</td>
+            <td>{totalG > totalB ? TEAM_NAMES.girls : totalB > totalG ? TEAM_NAMES.boys : 'Tied'}</td>
           </tr>
         </tfoot>
       </table>

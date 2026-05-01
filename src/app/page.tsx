@@ -1,9 +1,9 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
 import {
-  HOLES, GameState, HoleScore, HolePoints,
-  initHoleScore, initHolePoints,
-  saveState, loadState, totalPoints
+  HOLES, DAYS, TournamentState, GameState, HoleScore, HolePoints,
+  initHoleScore, initHolePoints, buildDayState, buildTournamentState,
+  saveState, loadState, dayTotals, tournamentTotals, TEAM_NAMES
 } from '@/lib/game'
 import Header from '@/components/Header'
 import ScoreBar from '@/components/ScoreBar'
@@ -13,72 +13,124 @@ import StatsTab from '@/components/StatsTab'
 import CourseTab from '@/components/CourseTab'
 import styles from './page.module.css'
 
-const TABS = ['Scorecard', 'Summary', 'Stats', 'Course']
-
-function buildInitialState(): GameState {
-  const scores: Record<number, HoleScore> = {}
-  const points: Record<number, HolePoints> = {}
-  HOLES.forEach(h => {
-    scores[h.n] = initHoleScore(h.par)
-    points[h.n] = initHolePoints()
-  })
-  return { scores, points }
-}
+const INNER_TABS = ['Scorecard', 'Summary', 'Stats', 'Course']
 
 export default function GolfApp() {
-  const [state, setState] = useState<GameState>(buildInitialState)
-  const [tab, setTab] = useState(0)
+  const [tournament, setTournament] = useState<TournamentState>(buildTournamentState)
+  const [activeDay, setActiveDay] = useState(0)
+  const [innerTab, setInnerTab] = useState(0)
   const [hydrated, setHydrated] = useState(false)
 
   useEffect(() => {
     const saved = loadState()
-    if (saved) setState(saved)
+    if (saved) setTournament(saved)
     setHydrated(true)
   }, [])
 
-  const updateState = useCallback((next: GameState) => {
-    setState(next)
+  const updateTournament = useCallback((next: TournamentState) => {
+    setTournament(next)
     saveState(next)
   }, [])
 
+  const dayState: GameState = tournament.days[activeDay] ?? buildDayState()
+
   const handleScoreChange = (holeN: number, team: 'girls' | 'boys', delta: number) => {
-    const next = { ...state, scores: { ...state.scores } }
-    const cur = next.scores[holeN] ?? initHoleScore(HOLES[holeN - 1].par)
-    next.scores[holeN] = {
-      ...cur,
-      [team]: Math.max(1, Math.min(12, cur[team] + delta))
+    const day = tournament.days[activeDay] ?? buildDayState()
+    const cur = day.scores[holeN] ?? initHoleScore(HOLES[holeN - 1].par)
+    const next: TournamentState = {
+      days: {
+        ...tournament.days,
+        [activeDay]: {
+          ...day,
+          scores: {
+            ...day.scores,
+            [holeN]: { ...cur, [team]: Math.max(1, Math.min(12, cur[team] + delta)) }
+          }
+        }
+      }
     }
-    updateState(next)
+    updateTournament(next)
   }
 
   const handlePointToggle = (holeN: number, pointId: string) => {
-    const next = { ...state, points: { ...state.points } }
-    const cur = next.points[holeN] ?? initHolePoints()
-    next.points[holeN] = { ...cur, [pointId]: !cur[pointId] }
-    updateState(next)
+    const day = tournament.days[activeDay] ?? buildDayState()
+    const cur = day.points[holeN] ?? initHolePoints()
+    const next: TournamentState = {
+      days: {
+        ...tournament.days,
+        [activeDay]: {
+          ...day,
+          points: {
+            ...day.points,
+            [holeN]: { ...cur, [pointId]: !cur[pointId] }
+          }
+        }
+      }
+    }
+    updateTournament(next)
   }
 
-  const handleReset = () => {
-    if (!window.confirm('Reset all scores and points?')) return
-    const fresh = buildInitialState()
-    updateState(fresh)
+  const handleResetDay = () => {
+    if (!window.confirm(`Reset scores for ${DAYS[activeDay].date}?`)) return
+    const next: TournamentState = {
+      days: { ...tournament.days, [activeDay]: buildDayState() }
+    }
+    updateTournament(next)
   }
 
-  const { g, b } = totalPoints(state)
+  const { g: dayG, b: dayB } = dayTotals(dayState)
+  const { g: totalG, b: totalB } = tournamentTotals(tournament)
 
   if (!hydrated) return null
 
   return (
     <div className={styles.app}>
       <Header />
-      <ScoreBar girlsTotal={g} boysTotal={b} />
 
+      {/* Tournament total bar */}
+      <ScoreBar
+        girlsTotal={totalG}
+        boysTotal={totalB}
+        girlsLabel={`${TEAM_NAMES.girls} total`}
+        boysLabel={`${TEAM_NAMES.boys} total`}
+      />
+
+      {/* Day tabs */}
+      <div className={styles.dayTabs}>
+        {DAYS.map((d, i) => {
+          const dt = dayTotals(tournament.days[i] ?? buildDayState())
+          const hasData = dt.g > 0 || dt.b > 0
+          return (
+            <button
+              key={i}
+              className={`${styles.dayTab} ${activeDay === i ? styles.dayTabActive : ''}`}
+              onClick={() => setActiveDay(i)}
+            >
+              <span className={styles.dayLabel}>{d.label}</span>
+              {hasData && (
+                <span className={styles.dayScore}>{dt.g}–{dt.b}</span>
+              )}
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Day score bar */}
+      <ScoreBar
+        girlsTotal={dayG}
+        boysTotal={dayB}
+        girlsLabel={TEAM_NAMES.girls}
+        boysLabel={TEAM_NAMES.boys}
+        compact
+      />
+
+      {/* Inner tabs */}
       <div className={styles.tabs}>
-        {TABS.map((name, i) => (
+        {INNER_TABS.map((name, i) => (
           <button
             key={name}
-            className={`${styles.tab} ${tab === i ? styles.tabActive : ''}`}
-            onClick={() => setTab(i)}
+            className={`${styles.tab} ${innerTab === i ? styles.tabActive : ''}`}
+            onClick={() => setInnerTab(i)}
           >
             {name}
           </button>
@@ -86,19 +138,19 @@ export default function GolfApp() {
       </div>
 
       <div className={styles.content}>
-        {tab === 0 && HOLES.map(h => (
+        {innerTab === 0 && HOLES.map(h => (
           <HoleCard
             key={h.n}
             hole={h}
-            score={state.scores[h.n] ?? initHoleScore(h.par)}
-            points={state.points[h.n] ?? initHolePoints()}
+            score={dayState.scores[h.n] ?? initHoleScore(h.par)}
+            points={dayState.points[h.n] ?? initHolePoints()}
             onScoreChange={(team, delta) => handleScoreChange(h.n, team, delta)}
             onPointToggle={(pid) => handlePointToggle(h.n, pid)}
           />
         ))}
-        {tab === 1 && <SummaryTab state={state} />}
-        {tab === 2 && <StatsTab state={state} />}
-        {tab === 3 && <CourseTab onReset={handleReset} />}
+        {innerTab === 1 && <SummaryTab state={dayState} />}
+        {innerTab === 2 && <StatsTab state={dayState} />}
+        {innerTab === 3 && <CourseTab onReset={handleResetDay} dayLabel={DAYS[activeDay].date} />}
       </div>
     </div>
   )
