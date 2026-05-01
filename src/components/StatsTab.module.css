@@ -1,0 +1,98 @@
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 10px;
+}
+
+.cardTitle {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.catBlock { margin-bottom: 12px; }
+
+.catLabel {
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.barRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.barTeam {
+  width: 34px;
+  font-size: 10px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.barTeamG { color: var(--girls); }
+.barTeamB { color: var(--boys);  }
+
+.barWrap {
+  flex: 1;
+  height: 8px;
+  background: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s;
+  min-width: 2px;
+}
+
+.fillGirls { background: var(--girls); }
+.fillBoys  { background: var(--boys);  }
+
+.barVal {
+  width: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.valGirls { color: var(--girls); }
+.valBoys  { color: var(--boys);  }
+
+/* Share bar */
+.shareBar {
+  display: flex;
+  height: 16px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 8px;
+  background: #f0f0f0;
+}
+
+.shareGirls {
+  background: var(--girls);
+  transition: width 0.4s;
+}
+
+.shareBoys {
+  background: var(--boys);
+  transition: width 0.4s;
+}
+
+.shareLegend {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.legGirls { color: var(--girls); font-weight: 500; }
+.legBoys  { color: var(--boys);  font-weight: 500; }
