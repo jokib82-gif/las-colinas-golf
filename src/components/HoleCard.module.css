@@ -248,3 +248,55 @@
   font-weight: 700;
   color: var(--boys);
 }
+
+/* View toggle */
+.viewToggle {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  background: #f0f0f0;
+  border-radius: 8px;
+  padding: 3px;
+}
+
+.toggleBtn {
+  flex: 1;
+  padding: 6px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: all 0.15s;
+}
+
+.toggleActive {
+  background: var(--card);
+  color: var(--grass);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Players section */
+.playersSection {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.playerGroup {
+  background: #f9f7f2;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.playerGroupLabel {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}

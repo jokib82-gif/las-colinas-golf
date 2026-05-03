@@ -20,9 +20,17 @@ export interface HolePoints {
   [pointId: string]: boolean
 }
 
+export interface PlayerScores {
+  lindaR: number
+  lindaF: number
+  ingi: number
+  johannes: number
+}
+
 export interface GameState {
   scores: Record<number, HoleScore>
   points: Record<number, HolePoints>
+  playerScores: Record<number, PlayerScores>
 }
 
 export interface TournamentState {
@@ -34,6 +42,17 @@ export const TEAM_NAMES = {
   boys: 'Gagnaperrar',
 }
 
+export const PLAYERS = {
+  girls: [
+    { id: 'lindaR', name: 'Linda R' },
+    { id: 'lindaF', name: 'Linda F' },
+  ],
+  boys: [
+    { id: 'ingi',     name: 'Ingi'      },
+    { id: 'johannes', name: 'Jóhannes'  },
+  ],
+}
+
 export const DAYS = [
   { label: 'Sat 3', date: 'May 3' },
   { label: 'Sun 4', date: 'May 4' },
@@ -42,25 +61,26 @@ export const DAYS = [
   { label: 'Wed 7', date: 'May 7' },
 ]
 
+// Correct Las Colinas Golf & Country Club, Spain scorecard (Par 71)
 export const HOLES: Hole[] = [
   { n: 1,  par: 4, hcp: 7  },
   { n: 2,  par: 4, hcp: 13 },
-  { n: 3,  par: 3, hcp: 17 },
-  { n: 4,  par: 5, hcp: 3  },
-  { n: 5,  par: 4, hcp: 9  },
-  { n: 6,  par: 3, hcp: 15 },
-  { n: 7,  par: 4, hcp: 1  },
-  { n: 8,  par: 5, hcp: 11 },
-  { n: 9,  par: 4, hcp: 5  },
-  { n: 10, par: 4, hcp: 6  },
-  { n: 11, par: 4, hcp: 12 },
-  { n: 12, par: 3, hcp: 18 },
-  { n: 13, par: 5, hcp: 2  },
-  { n: 14, par: 4, hcp: 8  },
-  { n: 15, par: 4, hcp: 14 },
-  { n: 16, par: 3, hcp: 16 },
-  { n: 17, par: 5, hcp: 4  },
-  { n: 18, par: 4, hcp: 10 },
+  { n: 3,  par: 5, hcp: 1  },
+  { n: 4,  par: 4, hcp: 9  },
+  { n: 5,  par: 3, hcp: 17 },
+  { n: 6,  par: 4, hcp: 5  },
+  { n: 7,  par: 3, hcp: 15 },
+  { n: 8,  par: 4, hcp: 3  },
+  { n: 9,  par: 4, hcp: 11 },
+  { n: 10, par: 3, hcp: 16 },
+  { n: 11, par: 5, hcp: 2  },
+  { n: 12, par: 4, hcp: 10 },
+  { n: 13, par: 4, hcp: 6  },
+  { n: 14, par: 3, hcp: 18 },
+  { n: 15, par: 5, hcp: 4  },
+  { n: 16, par: 4, hcp: 8  },
+  { n: 17, par: 3, hcp: 14 },
+  { n: 18, par: 5, hcp: 12 },
 ]
 
 export const POINT_DEFS: PointDef[] = [
@@ -92,6 +112,10 @@ export function initHoleScore(par: number): HoleScore {
   return { girls: par, boys: par }
 }
 
+export function initPlayerScores(par: number): PlayerScores {
+  return { lindaR: par, lindaF: par, ingi: par, johannes: par }
+}
+
 export function initHolePoints(): HolePoints {
   const pts: HolePoints = {}
   POINT_DEFS.forEach(p => { pts[p.id] = false })
@@ -101,11 +125,13 @@ export function initHolePoints(): HolePoints {
 export function buildDayState(): GameState {
   const scores: Record<number, HoleScore> = {}
   const points: Record<number, HolePoints> = {}
+  const playerScores: Record<number, PlayerScores> = {}
   HOLES.forEach(h => {
     scores[h.n] = initHoleScore(h.par)
     points[h.n] = initHolePoints()
+    playerScores[h.n] = initPlayerScores(h.par)
   })
-  return { scores, points }
+  return { scores, points, playerScores }
 }
 
 export function buildTournamentState(): TournamentState {
@@ -144,6 +170,20 @@ export function tournamentTotals(state: TournamentState): { g: number; b: number
   return { g, b }
 }
 
+export function playerTotals(state: TournamentState): Record<string, number> {
+  const totals: Record<string, number> = { lindaR: 0, lindaF: 0, ingi: 0, johannes: 0 }
+  DAYS.forEach((_, i) => {
+    const day = state.days[i] ?? buildDayState()
+    HOLES.forEach(h => {
+      const ps = day.playerScores?.[h.n] ?? initPlayerScores(h.par)
+      Object.keys(totals).forEach(pid => {
+        totals[pid] += ps[pid as keyof PlayerScores]
+      })
+    })
+  })
+  return totals
+}
+
 export function scoreLabel(score: number, par: number): string {
   const d = score - par
   if (d <= -2) return 'Eagle'
@@ -158,7 +198,7 @@ export function handicapHole(par: number): boolean {
   return par === 4 || par === 5
 }
 
-const STORAGE_KEY = 'lcgolf_v2'
+const STORAGE_KEY = 'lcgolf_v3'
 
 export function saveState(state: TournamentState): void {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)) } catch {}
