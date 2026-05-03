@@ -300,3 +300,50 @@
   letter-spacing: 0.5px;
   margin-bottom: 8px;
 }
+
+/* Per-player blocks */
+.playerGroupBlock {
+  margin-bottom: 14px;
+}
+
+.playerGroupTitle {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.playerBlock {
+  background: #f9f7f2;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 8px;
+}
+
+.playerBlockHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.playerBlockName {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.playerBlockPts {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.playerScoreRow {
+  margin-bottom: 8px;
+}
+
+.playerPtsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}

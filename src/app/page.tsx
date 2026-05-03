@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from 'react'
 import {
   HOLES, DAYS, TournamentState, GameState, HoleScore, HolePoints, PlayerScores,
   initHoleScore, initHolePoints, initPlayerScores, buildDayState, buildTournamentState,
-  saveState, loadState, dayTotals, tournamentTotals, TEAM_NAMES, PLAYERS
+  saveState, loadState, dayTotals, tournamentTotals, TEAM_NAMES
 } from '@/lib/game'
 import Header from '@/components/Header'
 import ScoreBar from '@/components/ScoreBar'

@@ -8,6 +8,7 @@ export interface PointDef {
   id: string
   label: string
   val: number
+  player: string        // playerId this point belongs to
   team: 'girls' | 'boys'
 }
 
@@ -44,14 +45,16 @@ export const TEAM_NAMES = {
 
 export const PLAYERS = {
   girls: [
-    { id: 'lindaR', name: 'Linda R' },
-    { id: 'lindaF', name: 'Linda F' },
+    { id: 'lindaR', name: 'Linda R', team: 'girls' as const },
+    { id: 'lindaF', name: 'Linda F', team: 'girls' as const },
   ],
   boys: [
-    { id: 'ingi',     name: 'Ingi'      },
-    { id: 'johannes', name: 'Jóhannes'  },
+    { id: 'ingi',     name: 'Ingi',     team: 'boys' as const },
+    { id: 'johannes', name: 'Jóhannes', team: 'boys' as const },
   ],
 }
+
+export const ALL_PLAYERS = [...PLAYERS.girls, ...PLAYERS.boys]
 
 export const DAYS = [
   { label: 'Sat 3', date: 'May 3' },
@@ -61,7 +64,7 @@ export const DAYS = [
   { label: 'Wed 7', date: 'May 7' },
 ]
 
-// Correct Las Colinas Golf & Country Club, Spain scorecard (Par 71)
+// Correct Las Colinas Golf & Country Club, Spain (Par 71)
 export const HOLES: Hole[] = [
   { n: 1,  par: 4, hcp: 7  },
   { n: 2,  par: 4, hcp: 13 },
@@ -83,30 +86,34 @@ export const HOLES: Hole[] = [
   { n: 18, par: 5, hcp: 12 },
 ]
 
-export const POINT_DEFS: PointDef[] = [
-  { id: 'best_indiv_g',    label: 'Best individual score', val: 1, team: 'girls' },
-  { id: 'best_indiv_b',    label: 'Best individual score', val: 1, team: 'boys'  },
-  { id: 'best_combined_g', label: 'Best combined score',   val: 1, team: 'girls' },
-  { id: 'best_combined_b', label: 'Best combined score',   val: 1, team: 'boys'  },
-  { id: 'fairway_g',       label: 'Fairway hit',           val: 1, team: 'girls' },
-  { id: 'fairway_b',       label: 'Fairway hit',           val: 1, team: 'boys'  },
-  { id: 'longest_g',       label: 'Longest drive',         val: 1, team: 'girls' },
-  { id: 'longest_b',       label: 'Longest drive',         val: 1, team: 'boys'  },
-  { id: 'closest_g',       label: 'Closest to hole',       val: 1, team: 'girls' },
-  { id: 'closest_b',       label: 'Closest to hole',       val: 1, team: 'boys'  },
-  { id: 'gir_g',           label: 'GIR',                   val: 1, team: 'girls' },
-  { id: 'gir_b',           label: 'GIR',                   val: 1, team: 'boys'  },
-  { id: 'sand_g',          label: 'Sand save',             val: 1, team: 'girls' },
-  { id: 'sand_b',          label: 'Sand save',             val: 1, team: 'boys'  },
-  { id: 'oneputt_g',       label: 'One-putt',              val: 1, team: 'girls' },
-  { id: 'oneputt_b',       label: 'One-putt',              val: 1, team: 'boys'  },
-  { id: 'string_g',        label: 'Putt from string',      val: 1, team: 'girls' },
-  { id: 'string_b',        label: 'Putt from string',      val: 1, team: 'boys'  },
-  { id: 'birdie_g',        label: 'Birdie',                val: 2, team: 'girls' },
-  { id: 'birdie_b',        label: 'Birdie',                val: 2, team: 'boys'  },
-  { id: 'eagle_g',         label: 'Eagle',                 val: 3, team: 'girls' },
-  { id: 'eagle_b',         label: 'Eagle',                 val: 3, team: 'boys'  },
+// Point categories — one entry per player per category
+// 'par3only' and 'nopar3' flags handled in UI filtering
+export type PointCategory = {
+  key: string
+  label: string
+  val: number
+  par3only?: boolean   // only show on par 3 holes
+  nopar3?: boolean     // hide on par 3 holes
+}
+
+export const POINT_CATEGORIES: PointCategory[] = [
+  { key: 'best_indiv',   label: 'Best individual score', val: 1 },
+  { key: 'best_combined',label: 'Best combined score',   val: 1 },
+  { key: 'fairway',      label: 'Fairway hit',           val: 1, nopar3: true  },
+  { key: 'longest',      label: 'Longest drive',         val: 1, nopar3: true  },
+  { key: 'closest',      label: 'Closest to hole',       val: 1, par3only: true },
+  { key: 'gir',          label: 'GIR',                   val: 1 },
+  { key: 'sand',         label: 'Sand save',             val: 1 },
+  { key: 'oneputt',      label: 'One-putt',              val: 1 },
+  { key: 'string',       label: 'Putt from string',      val: 1 },
+  { key: 'birdie',       label: 'Birdie',                val: 2 },
+  { key: 'eagle',        label: 'Eagle',                 val: 3 },
 ]
+
+// Build a flat point id like 'lindaR_birdie'
+export function pointId(playerId: string, categoryKey: string): string {
+  return `${playerId}_${categoryKey}`
+}
 
 export function initHoleScore(par: number): HoleScore {
   return { girls: par, boys: par }
@@ -118,7 +125,11 @@ export function initPlayerScores(par: number): PlayerScores {
 
 export function initHolePoints(): HolePoints {
   const pts: HolePoints = {}
-  POINT_DEFS.forEach(p => { pts[p.id] = false })
+  ALL_PLAYERS.forEach(p => {
+    POINT_CATEGORIES.forEach(cat => {
+      pts[pointId(p.id, cat.key)] = false
+    })
+  })
   return pts
 }
 
@@ -140,14 +151,25 @@ export function buildTournamentState(): TournamentState {
   return { days }
 }
 
-export function calcHolePoints(points: HolePoints): { g: number; b: number } {
+// Returns { g, b } team points for a hole, and per-player points
+export function calcHolePoints(points: HolePoints): {
+  g: number; b: number
+  byPlayer: Record<string, number>
+} {
   let g = 0, b = 0
-  POINT_DEFS.forEach(p => {
-    if (!points[p.id]) return
-    if (p.team === 'girls') g += p.val
-    if (p.team === 'boys')  b += p.val
+  const byPlayer: Record<string, number> = {}
+  ALL_PLAYERS.forEach(p => { byPlayer[p.id] = 0 })
+
+  ALL_PLAYERS.forEach(player => {
+    POINT_CATEGORIES.forEach(cat => {
+      const pid = pointId(player.id, cat.key)
+      if (!points[pid]) return
+      byPlayer[player.id] += cat.val
+      if (player.team === 'girls') g += cat.val
+      if (player.team === 'boys')  b += cat.val
+    })
   })
-  return { g, b }
+  return { g, b, byPlayer }
 }
 
 export function dayTotals(state: GameState): { g: number; b: number } {
@@ -170,7 +192,8 @@ export function tournamentTotals(state: TournamentState): { g: number; b: number
   return { g, b }
 }
 
-export function playerTotals(state: TournamentState): Record<string, number> {
+// Player stroke totals across all days
+export function playerStrokeTotals(state: TournamentState): Record<string, number> {
   const totals: Record<string, number> = { lindaR: 0, lindaF: 0, ingi: 0, johannes: 0 }
   DAYS.forEach((_, i) => {
     const day = state.days[i] ?? buildDayState()
@@ -178,6 +201,22 @@ export function playerTotals(state: TournamentState): Record<string, number> {
       const ps = day.playerScores?.[h.n] ?? initPlayerScores(h.par)
       Object.keys(totals).forEach(pid => {
         totals[pid] += ps[pid as keyof PlayerScores]
+      })
+    })
+  })
+  return totals
+}
+
+// Player point totals across all days
+export function playerPointTotals(state: TournamentState): Record<string, number> {
+  const totals: Record<string, number> = { lindaR: 0, lindaF: 0, ingi: 0, johannes: 0 }
+  DAYS.forEach((_, i) => {
+    const day = state.days[i] ?? buildDayState()
+    HOLES.forEach(h => {
+      const pts = day.points[h.n] ?? initHolePoints()
+      const { byPlayer } = calcHolePoints(pts)
+      Object.keys(totals).forEach(pid => {
+        totals[pid] += byPlayer[pid] ?? 0
       })
     })
   })
@@ -198,7 +237,7 @@ export function handicapHole(par: number): boolean {
   return par === 4 || par === 5
 }
 
-const STORAGE_KEY = 'lcgolf_v3'
+const STORAGE_KEY = 'lcgolf_v4'
 
 export function saveState(state: TournamentState): void {
   try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)) } catch {}

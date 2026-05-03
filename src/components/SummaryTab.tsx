@@ -1,15 +1,15 @@
-import { HOLES, GameState, TournamentState, calcHolePoints, initHolePoints, dayTotals, TEAM_NAMES, PLAYERS, playerTotals, initPlayerScores } from '@/lib/game'
+import { HOLES, GameState, TournamentState, calcHolePoints, initHolePoints, dayTotals, TEAM_NAMES, PLAYERS, playerPointTotals, playerStrokeTotals } from '@/lib/game'
 import styles from './SummaryTab.module.css'
 
 interface Props { state: GameState; tournament: TournamentState }
 
 export default function SummaryTab({ state, tournament }: Props) {
   const { g: totalG, b: totalB } = dayTotals(state)
-  const pTotals = playerTotals(tournament)
+  const pPoints = playerPointTotals(tournament)
+  const pStrokes = playerStrokeTotals(tournament)
 
   return (
     <div>
-      {/* Hole by hole */}
       <div className={styles.sectionTitle}>Hole by Hole</div>
       <div className={styles.wrap}>
         <table className={styles.table}>
@@ -26,8 +26,8 @@ export default function SummaryTab({ state, tournament }: Props) {
             {HOLES.map(h => {
               const pts = state.points[h.n] ?? initHolePoints()
               const { g, b } = calcHolePoints(pts)
-              const winner = g > b ? TEAM_NAMES.girls : b > g ? TEAM_NAMES.boys : '—'
               const winClass = g > b ? styles.leadGirls : b > g ? styles.leadBoys : styles.leadTied
+              const winner = g > b ? TEAM_NAMES.girls : b > g ? TEAM_NAMES.boys : '—'
               return (
                 <tr key={h.n}>
                   <td className={styles.holeCell}>H{h.n}</td>
@@ -50,15 +50,17 @@ export default function SummaryTab({ state, tournament }: Props) {
         </table>
       </div>
 
-      {/* Player totals */}
-      <div className={styles.sectionTitle} style={{ marginTop: 16 }}>Player Totals (Tournament)</div>
+      <div className={styles.sectionTitle} style={{ marginTop: 16 }}>Player Leaderboard (Tournament)</div>
       <div className={styles.playerCards}>
         <div className={styles.playerGroup}>
           <div className={styles.playerGroupTitle} style={{ color: 'var(--girls)' }}>{TEAM_NAMES.girls}</div>
           {PLAYERS.girls.map(p => (
             <div key={p.id} className={styles.playerRow}>
               <span className={styles.playerName}>{p.name}</span>
-              <span className={styles.playerScore} style={{ color: 'var(--girls)' }}>{pTotals[p.id]}</span>
+              <div className={styles.playerStats}>
+                <span className={styles.playerPts} style={{ color: 'var(--girls)' }}>{pPoints[p.id]} pts</span>
+                <span className={styles.playerStrokes}>{pStrokes[p.id]} strokes</span>
+              </div>
             </div>
           ))}
         </div>
@@ -67,7 +69,10 @@ export default function SummaryTab({ state, tournament }: Props) {
           {PLAYERS.boys.map(p => (
             <div key={p.id} className={styles.playerRow}>
               <span className={styles.playerName}>{p.name}</span>
-              <span className={styles.playerScore} style={{ color: 'var(--boys)' }}>{pTotals[p.id]}</span>
+              <div className={styles.playerStats}>
+                <span className={styles.playerPts} style={{ color: 'var(--boys)' }}>{pPoints[p.id]} pts</span>
+                <span className={styles.playerStrokes}>{pStrokes[p.id]} strokes</span>
+              </div>
             </div>
           ))}
         </div>
